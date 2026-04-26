@@ -1,0 +1,25 @@
+# vaultlink configuration file
+# Copy this file to vaultlink.yaml and fill in your values.
+
+version: "1"
+
+environments:
+  # Development Vault instance
+  - name: dev
+    address: http://localhost:8200
+    # Token can also be set via VAULT_TOKEN_DEV env var
+    token: root
+    # Prefix is the KV v2 mount path + base path to scope operations
+    prefix: secret/dev
+
+  # Staging Vault instance
+  - name: staging
+    address: https://vault.staging.example.com
+    token: ""
+    prefix: secret/staging
+
+  # Production Vault instance
+  - name: prod
+    address: https://vault.prod.example.com
+    token: ""
+    prefix: secret/prod
