@@ -77,6 +77,19 @@ func TestPromoteSecret_ReadError(t *testing.T) {
 	}
 }
 
+func TestPromoteSecret_WriteError(t *testing.T) {
+	src := &promoteClient{data: map[string]map[string]interface{}{"app/db": {"pass": "s3cr3t"}}}
+	dst := &promoteClient{writeErr: errors.New("permission denied")}
+
+	r := PromoteSecret(src, dst, "app/db", false)
+	if r.Success {
+		t.Fatal("expected failure on write error")
+	}
+	if r.Error == nil {
+		t.Fatal("expected non-nil error on write failure")
+	}
+}
+
 func TestPromoteSecrets_MultipleResults(t *testing.T) {
 	src := &promoteClient{data: map[string]map[string]interface{}{
 		"a": {"k": "v"},
