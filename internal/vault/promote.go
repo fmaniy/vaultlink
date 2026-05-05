@@ -42,3 +42,16 @@ func PromoteSecrets(src, dst Client, paths []string, overwrite bool) []PromoteRe
 	}
 	return results
 }
+
+// PromoteSummary returns the count of successful and failed promotions
+// from a slice of PromoteResult values.
+func PromoteSummary(results []PromoteResult) (succeeded, failed int) {
+	for _, r := range results {
+		if r.Success {
+			succeeded++
+		} else {
+			failed++
+		}
+	}
+	return succeeded, failed
+}
