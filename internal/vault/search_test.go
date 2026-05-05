@@ -71,3 +71,29 @@ func TestSearchSecrets_NoMatch(t *testing.T) {
 	require.NoError(t, err)
 	assert.Empty(t, results)
 }
+
+func TestSearchSecrets_MatchByKeyAndValue(t *testing.T) {
+	client := listClient(t, map[string]interface{}{
+		"data": map[string]interface{}{
+			"keys": []interface{}{"infra/db"},
+		},
+	})
+
+	client.logical.(*fakeLogical).responses["secret/data/infra/db"] = &fakeSecret{
+		data: map[string]interface{}{
+			"data": map[string]interface{}{
+				"db_host":     "db.example.com",
+				"db_password": "secret_pass",
+				"unrelated":   "value",
+			},
+		},
+	}
+
+	// "db" matches both the key "db_host" and the value "db.example.com"
+	results, err := SearchSecrets(client, "secret", "db")
+	require.NoError(t, err)
+	require.Len(t, results, 1)
+	assert.Contains(t, results[0].MatchedKeys, "db_host")
+	assert.Contains(t, results[0].MatchedKeys, "db_password")
+	assert.NotContains(t, results[0].MatchedKeys, "unrelated")
+}
