@@ -61,6 +61,12 @@ func init() {
 			}
 			w.Flush()
 			fmt.Fprintf(os.Stdout, "\n%d expired / %d checked\n", expiredCount, len(results))
+
+			// Exit with a non-zero status code when expired secrets are found,
+			// allowing callers (e.g. CI pipelines) to detect expiry automatically.
+			if expiredCount > 0 {
+				os.Exit(1)
+			}
 			return nil
 		},
 	}
