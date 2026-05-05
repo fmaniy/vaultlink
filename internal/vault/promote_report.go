@@ -34,3 +34,15 @@ func printPromoteReportTo(w io.Writer, results []PromoteResult, src, dst string)
 	fmt.Fprintln(tw, "")
 	fmt.Fprintf(tw, "Summary: %d promoted, %d failed\n", succeeded, failed)
 }
+
+// PromoteReportHasFailures returns true if any result in the report failed.
+// This is useful for callers that need to set a non-zero exit code when
+// one or more secrets could not be promoted.
+func PromoteReportHasFailures(results []PromoteResult) bool {
+	for _, r := range results {
+		if !r.Success {
+			return true
+		}
+	}
+	return false
+}
