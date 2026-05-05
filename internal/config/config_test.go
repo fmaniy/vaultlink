@@ -48,6 +48,14 @@ func TestLoad_MissingFile(t *testing.T) {
 	}
 }
 
+func TestLoad_InvalidYAML(t *testing.T) {
+	p := writeTemp(t, "this: is: not: valid: yaml: :::")
+	_, err := config.Load(p)
+	if err == nil {
+		t.Fatal("expected error for invalid YAML")
+	}
+}
+
 func TestValidate_DuplicateName(t *testing.T) {
 	content := `
 version: "1"
