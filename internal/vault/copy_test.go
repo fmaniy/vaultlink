@@ -75,3 +75,17 @@ func TestCopySecret_WriteError(t *testing.T) {
 		t.Fatal("expected error, got nil")
 	}
 }
+
+// TestCopySecret_NotFound verifies that copying a non-existent secret returns an error.
+func TestCopySecret_NotFound(t *testing.T) {
+	stub := &stubLogicalCopy{
+		readData: map[string]interface{}{},
+	}
+	src := clientWithFakeLogical(stub)
+	dst := clientWithFakeLogical(stub)
+
+	err := CopySecret(src, dst, "secret/data/app/missing", "secret/data/app/missing")
+	if err == nil {
+		t.Fatal("expected error for missing source secret, got nil")
+	}
+}
